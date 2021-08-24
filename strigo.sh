@@ -13,7 +13,7 @@ chmod 700 get_helm.sh
 ./get_helm.sh
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 chmod +x kubectl
-mv ./kubectl /usr/local/bin/kubectl 
+mv ./kubectl /usr/local/bin/kubectl
 sudo -u ubuntu kind create cluster --name=springone2021
 sudo cp -r /root/.kube /$HOME/.kube
 sudo chown -R $USER $HOME/.kube
@@ -27,12 +27,12 @@ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.2
 while [[ $(kubectl get pods -n cert-manager -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True True True" ]]; do echo "Checking for cert-manager pods" && sleep 1; done
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm install my-release bitnami/spring-cloud-dataflow
-kubectl create secret docker-registry scdf-image-regcred --docker-server=registry.pivotal.io --docker-username=avannala@pivotal.io --docker-password=#############
+kubectl create secret docker-registry scdf-image-regcred --docker-server=registry.pivotal.io --docker-username=avannala@pivotal.io --docker-password=$docker-passs
 kubectl create ns gemfire-system
-kubectl create secret docker-registry image-pull-secret --namespace=gemfire-system --docker-server=registry.pivotal.io --docker-username=avannala@pivotal.io --docker-password=#############
-kubectl create secret docker-registry image-pull-secret --docker-server=registry.pivotal.io --docker-username=avannala@pivotal.io --docker-password=#############
+kubectl create secret docker-registry image-pull-secret --namespace=gemfire-system --docker-server=registry.pivotal.io --docker-username=avannala@pivotal.io --docker-password=$docker-passs
+kubectl create secret docker-registry image-pull-secret --docker-server=registry.pivotal.io --docker-username=avannala@pivotal.io --docker-password=$docker-passs
 export HELM_EXPERIMENTAL_OCI=1
-helm registry login -u myuser registry.pivotal.io -u avannala@pivotal.io -p #############
+helm registry login -u myuser registry.pivotal.io -u avannala@pivotal.io -p $docker-passs
 helm repo update
 helm chart pull registry.pivotal.io/tanzu-gemfire-for-kubernetes/gemfire-operator:1.0.1
 helm chart export registry.pivotal.io/tanzu-gemfire-for-kubernetes/gemfire-operator:1.0.1
