@@ -3,27 +3,17 @@ cd /home/ubuntu
 export HOME=/home/ubuntu
 export USER=ubuntu
 sudo apt-get update
-sudo apt-get install \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    gnupg \
-    lsb-release
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-echo \
-  "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt-get update
 sudo snap install docker
-sudo chown -R ubuntu:ubuntu /var/run/
-sudo apt-get install docker-ce docker-ce-cli containerd.io
-sudo systemctl start docker
+sudo chown -R ubuntu:ubuntu /var/run/docker.sock
 curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64
 chmod +x ./kind
 mv ./kind /usr/local/bin/kind
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
 chmod 700 get_helm.sh
 ./get_helm.sh
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+mv ./kubectl /usr/local/bin/kubectl 
 sudo -u ubuntu kind create cluster --name=springone2021
 sudo cp -r /root/.kube /$HOME/.kube
 sudo chown -R $USER $HOME/.kube
