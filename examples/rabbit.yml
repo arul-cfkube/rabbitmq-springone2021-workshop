@@ -2,8 +2,7 @@
 apiVersion: rabbitmq.com/v1beta1
 kind: RabbitmqCluster
 metadata:
-  name: rmqdemo
-  namespace: k8s-rmq-operator
+  name: test
 spec:
   replicas: 1
   persistence:
