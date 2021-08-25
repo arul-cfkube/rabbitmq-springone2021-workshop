@@ -1,6 +1,8 @@
 #!/bin/bash
 cd /home/ubuntu
 export HOME=/home/ubuntu
+touch log.txt
+chown ubuntu:ubuntu log.txt
 export USER=ubuntu
 sudo apt-get update
 sudo snap install docker
@@ -25,11 +27,11 @@ nodes:
 - role: worker
 - role: worker
 EOF
-sudo -u ubuntu kind create cluster --name=springone2021 --config=kind.yml
-sudo cp -r /root/.kube /$HOME/.kube
-sudo chown -R $USER $HOME/.kube
-while [[ $(kubectl get node -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do echo "waiting for Nodes to get Ready" && sleep 1; done
-kubectl get nodes
+sudo -u ubuntu kind create cluster --name=springone2021 --config=kind.yml >> log.txt
+#sudo cp -r /root/.kube /$HOME/.kube
+#sudo chown -R $USER $HOME/.kube
+while [[ $(kubectl get node -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True True True True" ]]; do echo "waiting for Nodes to get Ready" && sleep 1; done >> log.txt
+kubectl get nodes >> log.txt
 kubectl get pods
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo update
@@ -38,8 +40,8 @@ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.2
 while [[ $(kubectl get pods -n cert-manager -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True True True" ]]; do echo "Checking for cert-manager pods" && sleep 1; done
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm install my-release bitnami/spring-cloud-dataflow
-kubectl create secret docker-registry scdf-image-regcred --docker-server=registry.pivotal.io --docker-username=avannala@pivotal.io --docker-password=1@Universe9
-#kubectl create ns gemfire-system
+kubectl create secret docker-registry scdf-image-regcred --docker-server=registry.pivotal.io --docker-username=avannala@pivotal.io --docker-password=$dockerpasss
+#kubectl create ns gemfire-systems
 #kubectl create secret docker-registry image-pull-secret --namespace=gemfire-system --docker-server=registry.pivotal.io --docker-username=avannala@pivotal.io --docker-password=$dockerpasss
 #kubectl create secret docker-registry image-pull-secret --docker-server=registry.pivotal.io --docker-username=avannala@pivotal.io --docker-password=$dockerpasss
 #export HELM_EXPERIMENTAL_OCI=1
@@ -60,4 +62,4 @@ kubectl create secret docker-registry scdf-image-regcred --docker-server=registr
 #EOF
 #kubectl apply -f gemfire.yml
 kubectl get ns
-kubectl get pods -A
+kubectl get pods -A >> log.txt
