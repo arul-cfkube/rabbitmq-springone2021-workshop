@@ -13,7 +13,7 @@ spec:
   definition:
     queue-mode: lazy
   rabbitmqClusterReference:
-    name: test
+    name: tanzurabbit
 ---
 apiVersion: rabbitmq.com/v1beta1
 kind: Queue
@@ -25,4 +25,4 @@ spec:
   autoDelete: false
   durable: true
   rabbitmqClusterReference:
-    name: test
+    name: tanzurabbit
